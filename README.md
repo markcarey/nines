@@ -1,6 +1,6 @@
 # Nines
 
-Nines is a cross-chain NFT game where NFTs from different chanin come together for bands of 9 NFTs and challenge each other for low or high stakes.
+Nines is a cross-chain NFT game where NFTs from different chains come together in bands of 9 NFTs and challenge each other for low or high stakes.
 
 ## The Vision
 - NFTs from multiple chains join together in teams of 9
