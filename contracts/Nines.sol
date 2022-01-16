@@ -164,31 +164,31 @@ contract Nines is AccessControlEnumerable, IERC1155Receiver {
     }
 
     function mint() public {
-        console.log("TODO");
+        
     }
 
     function invite() public {
-        console.log("TODO");
+        
     }
 
     function challenge() public {
-        console.log("TODO");
+        
     }
 
     function respond() public {
-        console.log("TODO");
+        
     }
 
     function decline() public {
-        console.log("TODO");
+        
     }
 
     function evict() public {
-        console.log("TODO");
+        
     }
 
     function vote() public {
-        console.log("TODO");
+        
     }
 
     function onERC1155Received(

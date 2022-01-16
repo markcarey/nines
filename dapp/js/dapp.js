@@ -3,7 +3,20 @@ const serverUrl = "https://azabf5m0ll7e.usemoralis.com:2053/server";
 const appId = "EITqHfNiV9kpMCeH57o1u6JxuQ2QcmuFCDEhHMCY";
 Moralis.start({ serverUrl, appId });
 
-var chain = "rinkeby";
+var chains = {};
+chains["eth"] = 1;
+chains["ropsten"] = 3;
+chains["rinkeby"] = 4;
+chains["goerli"] = 5;
+chains["kovan"] = 42;
+chains["bsc"] = 56;
+chains["polygon"] = 137;
+chains["mumbai"] = 80001;
+chains["avalanche"] = 43114;
+chains["avalanche testnet"] = 43113;
+chains["fantom"] = 250;
+
+var chain = "mumbai";
 
 var rpcURLs = {};
 rpcURLs.rinkeby = "eth-rinkeby.alchemyapi.io/v2/n_mDCfTpJ8I959arPP7PwiOptjubLm57";
@@ -16,16 +29,23 @@ var web3;
 var BN;
 var blockExplorer = ""
 var addr = {};
+var chosenChain = 1;
+var chosenChainName = "eth";
+var ninesAddress;
+var nines;
+var chosenNFT = {};
+var ninesIds;
 
 var factories = {};
-factories.rinkeby =     "0x5A75A669EA75575F3D36AFD0b57AbfCbc79EAa75";
-factories.mumbai =      "0xAa18cDA7c7c8894595B4e6bdEc7647Ff13e663ae";
-factories.polygon =     "0x1d8e39704619E07dd0bd27CadBa0D6F607e15977"; // localhost:polygon
+factories.rinkeby =     "";
+factories.mumbai =      "0xd957f6EC278BD6105910aF73FdEB23626516966E";
+factories.polygon =     ""; // localhost:polygon
 var factoryAddress = factories[chain];
 
 function getFactory() {
     var rpcURL = rpcURLs[chain];
     factoryAddress = factories[chain];
+    ninesAddress = factoryAddress;
     //rpcURL = "localhost:8545";                  //localhost!!!!
     web3 = AlchemyWeb3.createAlchemyWeb3("wss://"+rpcURL);
     //web3 = AlchemyWeb3.createAlchemyWeb3("http://"+rpcURL); // localhost!!!!
@@ -33,8 +53,8 @@ function getFactory() {
     const prov = {"url": "https://"+rpcURL};
     var provider = new ethers.providers.JsonRpcProvider(prov);
 
-    //factory = new web3.eth.Contract(factoryABI, factoryAddress);
-    //ethersFactory = new ethers.Contract(factoryAddress, factoryABI, provider);
+    nines = new web3.eth.Contract(ninesABI, ninesAddress);
+    ethersNines = new ethers.Contract(ninesAddress, ninesABI, provider);
     BN = web3.utils.BN;
     setAddr();
 }
@@ -129,6 +149,8 @@ function abbrAddress(address){
 
 
 async function main() {
+    $(".section").hide();
+    $(".welcome").show();
     dappChain = await web3.eth.getChainId();
     console.log("The chainId is " + dappChain);
 
@@ -240,6 +262,40 @@ function fromWei(amount) {
     return web3.utils.fromWei(new BN(amount));
 }
 
+function loadNFTs(nfts) {
+    $("#nft-chooser-cards .card-list").html("");
+    $.each(nfts, function( index, nft ) {
+        if (nft.metadata) {
+            $("#nft-chooser-cards .card-list").append( getNFTHTML(nft) );
+        }
+    });
+    $("#nft-chooser").show();
+}
+
+async function loadNines() {
+    var count = 0;
+    ninesIds = await nines.methods.getNinesIds().call();
+    console.log(ninesIds);
+    count = ninesIds.length;
+    $("#nines-list ul").html("");
+    for (let i = 0; i < ninesIds.length; i++) {
+        var nine = await nines.methods.getNine(ninesIds[i]).call();
+        console.log(nine);
+        var ninths = await nines.methods.getNinths(ninesIds[i]).call();
+        console.log(ninths);
+        console.log(ninths.length);
+        nine.id = ninesIds[i];
+        nine.members = ninths.length;
+        var ctx = {
+            "name": nine.name,
+            "id": ninesIds[i],
+            "members": ninths.length
+        }
+        $("#nines-list ul").append( getNineHTML(ctx) );
+    }
+    return count;
+}
+
 
 
 $( document ).ready(function() {
@@ -254,39 +310,139 @@ $( document ).ready(function() {
         //wizard
         var $button = $(this);
         connectWallet()
-        .then(function(){
+        .then(async function(){
             if ( $button.attr("id") == "start-button" ) {
                 $(".welcome").hide();
-                $("#token-card").show();
+                $("#nft-chooser").show();
             }
         });
         return false;
     });
 
-    $(".login").click(async function(){
-        const options = { chain: 'eth', address: '0x09A900eB2ff6e9AcA12d4d1a396DdC9bE0307661' };
+    $("#chain-chooser").change(async function(){
+        chosenChainName = $(this).val();
+        chosenChain = chains[chosenChainName];
+        const options = { chain: chosenChainName, address: ethereum.selectedAddress };
         const nfts = await Moralis.Web3API.account.getNFTs(options);
         console.log(nfts);
-        let user = Moralis.User.current();
-        if (!user) {
-            user = await Moralis.authenticate({ signingMessage: "Log in using Moralis" });
-            console.log("logged in user:", user);
-            console.log(user.get("ethAddress"));
-        }
+        loadNFTs(nfts.result);
+    });
+
+    $( "#nft-chooser" ).on( "click", ".register", async function() {
+        var chainId = $(this).data("chain");
+        var contractAddress = $(this).data("contract");
+        var tokenId = $(this).data("token");
+        var holder = $(this).data("holder");
+        var apiUrl = `https://us-central1-slash-translate.cloudfunctions.net/ninesRegister?chain_name=${chosenChainName}&chain_id=${chosenChain}&contract=${contractAddress}&token_id=${tokenId}&holder=${holder}`; 
+        apiUrl = `https://api.nines.wtf/register?chain_name=${chosenChainName}&chain_id=${chosenChain}&contract=${contractAddress}&token_id=${tokenId}&holder=${holder}`; 
+        const response = await fetch(apiUrl);
+        var result = await response.json();
+        console.log(result);
+        chosenNFT = {
+            "chainId": chosenChain,
+            "contractAddress": contractAddress,
+            "tokenId": tokenId
+        };
+        $("#nft-chooser").hide();
+        var count = loadNines();
+        $("#joiner").show();
+    });
+
+    $(".create").click(async function(){
+        var name = $("#nine-name").val();
+        console.log("b4 nonce");
+        const nonce = await web3.eth.getTransactionCount(ethereum.selectedAddress, 'latest');
+        console.log(nonce);
+        console.log(chosenNFT, name);
+        const tx = {
+            'from': ethereum.selectedAddress,
+            'to': ninesAddress,
+            'gasPrice': gas,
+            'nonce': "" + nonce,
+            'data': nines.methods.create(chosenNFT.chainId, chosenNFT.contractAddress, chosenNFT.tokenId, name).encodeABI()
+        };
+        const txHash = await ethereum.request({
+            method: 'eth_sendTransaction',
+            params: [tx],
+        });
+        console.log(txHash);
+        var filter = await ethersNines.filters.NineCreated();
+        ethersNines.on(filter, (id, name, event) => { 
+            status("Nine created " + id);
+            $button.text("Created and Joined");
+            loadNines();
+        });
+    });
+
+    $( "#nines-list" ).on( "click", ".join", async function() {
+        var $button = $(this);
+        var id = $(this).data("nine");
+        const nonce = await web3.eth.getTransactionCount(ethereum.selectedAddress, 'latest');
+        console.log(chosenNFT, id);
+        const tx = {
+            'from': ethereum.selectedAddress,
+            'to': ninesAddress,
+            'gasPrice': gas,
+            'nonce': "" + nonce,
+            'data': nines.methods.join(chosenNFT.chainId, chosenNFT.contractAddress, chosenNFT.tokenId, id).encodeABI()
+        };
+        const txHash = await ethereum.request({
+            method: 'eth_sendTransaction',
+            params: [tx],
+        });
+        console.log(txHash);
+        var filter = await ethersNines.filters.NinthJoined();
+        ethersNines.on(filter, (id, chainId, contractAddress, tokenId, event) => { 
+            status("Nine joined");
+            $(this).find("i").text("check");
+            loadNines();
+        });
     });
 
 
 
 });
 
+function imageUrl(url) {
+    if ( url.startsWith("ipfs") ){
+        return ipfsToHttp(url);
+    } else {
+        return url;
+    }
+}
 
 
 // HTML templates
 
-function getDetailsHTML() {
+function getNFTHTML(ctx) {
+    var meta = JSON.parse(ctx.metadata);
+    var image;
+    if ("image" in meta) {
+        image = imageUrl(meta.image);
+    }
     var html = "";
     html = `
+    <div class="col s6 m3">
+        <div class="card">
+            <div class="card-image">
+                <img src="${image}">
+                <a data-chain="${chosenChain}" data-contract="${ctx.token_address}" data-token="${ctx.token_id}" data-holder="${ctx.owner_of}" class="btn-floating halfway-fab waves-effect waves-light red register"><i class="material-icons">add</i></a>
+            </div>
+            <div class="card-content">
+                <span class="card-title">${meta.name}</span>
+                <p>${meta.description}</p>
+            </div>
+        </div>
+    </div>
+    `;
+    return html;
+}
 
+function getNineHTML(ctx) {
+    console.log(ctx);
+    var html = "";
+    html = `
+    <li class="collection-item"><div>${ctx.name} (${ctx.members})<a href="#!" class="secondary-content join" data-nine="${ctx.id}"><i class="material-icons">add</i></a></div></li>
     `;
     return html;
 }
@@ -328,7 +484,8 @@ function status(message) {
 function ipfsToHttp(ipfs) {
     var http = "";
     var cid = ipfs.replace("ipfs://", "");
-    http = "https://" + cid + ".ipfs.dweb.link";
+    //http = "https://" + cid + ".ipfs.dweb.link";
+    http = "https://ipfs.moralis.io:2053/ipfs/" + cid;
     return http;
 }
 

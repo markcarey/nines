@@ -54,14 +54,21 @@ async function join(chainId, contractAddress, tokenId, nineId) {
     console.log("there are " + ninths.length + " ninths", ninths);
 }
 
+async function ownerOf(chainId, contractAddress, tokenId) {
+    var owner = await nines.registeredOwnerOf(chainId, contractAddress, tokenId);
+    console.log("owener", owner);
+}
+
 //register(1, "0xFAFf15C6cDAca61a4F87D329689293E07c98f578", 4, PUBLIC_KEY)
 //register(1, "0xFAFf15C6cDAca61a4F87D329689293E07c98f578", 3, PUBLIC_KEY)
+//register(1, "0xFAFf15C6cDAca61a4F87D329689293E07c98f578", 2, PUBLIC_KEY)
+ownerOf(1, "0xFAFf15C6cDAca61a4F87D329689293E07c98f578", 2)
 //getNineId(0)
 //getNine("0x0ac3506021f35dce14b9c72dc6284db3b8c1e06feea7bc839cfd9601aad04105")
 //getNinths("0x0ac3506021f35dce14b9c72dc6284db3b8c1e06feea7bc839cfd9601aad04105")
 //create(1, "0xFAFf15C6cDAca61a4F87D329689293E07c98f578", 4, "Testers")
 //getNinesIds()
-join(1, "0xFAFf15C6cDAca61a4F87D329689293E07c98f578", 3, "0x0ac3506021f35dce14b9c72dc6284db3b8c1e06feea7bc839cfd9601aad04105")
+//join(1, "0xFAFf15C6cDAca61a4F87D329689293E07c98f578", 3, "0x0ac3506021f35dce14b9c72dc6284db3b8c1e06feea7bc839cfd9601aad04105")
 
 .then(() => process.exit(0))
 .catch(error => {

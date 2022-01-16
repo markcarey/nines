@@ -3,7 +3,9 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
-  <title>Starter Template - Materialize</title>
+  <title>Nines - NFT DAO Game</title>
+  <link rel="shorcut icon" type="image/png" href="/images/nines.png">
+  <link rel="apple-touch-icon" href="/images/nines.png">
 
   <!-- CSS  -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -11,103 +13,118 @@
   <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
 </head>
 <body>
-  <nav class="light-blue lighten-1" role="navigation">
-    <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">Logo</a>
+  <nav class="grey darken-4" role="navigation">
+    <div class="nav-wrapper container">
+      <a id="logo-container" href="/" class="brand-logo"><img src="/images/nines.png" style="height: 64px;" /></a>
+      <span class="badge chain white text-blue text-darken-4" data-badge-caption="">Mumbai</span>
       <ul class="right hide-on-med-and-down">
-        <li><a href="#" class="login">Connect</a></li>
+        <li><a href="#" class="connect"><img /><span>Connect</span></a></li>
       </ul>
 
       <ul id="nav-mobile" class="sidenav">
-        <li><a href="#">Navbar Link</a></li>
+        <li><a href="#" class="connect"><img /><span>Connect</span></a></li>
       </ul>
       <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
     </div>
   </nav>
-  <div class="section no-pad-bot" id="index-banner">
+
+  <div class="section no-pad-bot welcome" id="index-banner">
     <div class="container">
       <br><br>
-      <h1 class="header center orange-text">Starter Template</h1>
+      <h1 class="header center grey-text text-darken-4">Nines</h1>
       <div class="row center">
-        <h5 class="header col s12 light">A modern responsive front-end framework based on Material Design</h5>
+        <h5 class="header col s12 light">A cross-chain game where NFTs come together to form mini-DAOs that do battle</h5>
       </div>
       <div class="row center">
-        <a href="http://materializecss.com/getting-started.html" id="download-button" class="btn-large waves-effect waves-light orange">Get Started</a>
+        <a href="#" id="start-button" class="btn-large waves-effect waves-light grey darken-4 connect">Connect</a>
       </div>
       <br><br>
-
     </div>
   </div>
 
 
-  <div class="container">
-    <div class="section">
-
-      <!--   Icon Section   -->
-      <div class="row">
-        <div class="col s12 m4">
-          <div class="icon-block">
-            <h2 class="center light-blue-text"><i class="material-icons">flash_on</i></h2>
-            <h5 class="center">Speeds up development</h5>
-
-            <p class="light">We did most of the heavy lifting for you to provide a default stylings that incorporate our custom components. Additionally, we refined animations and transitions to provide a smoother experience for developers.</p>
-          </div>
-        </div>
-
-        <div class="col s12 m4">
-          <div class="icon-block">
-            <h2 class="center light-blue-text"><i class="material-icons">group</i></h2>
-            <h5 class="center">User Experience Focused</h5>
-
-            <p class="light">By utilizing elements and principles of Material Design, we were able to create a framework that incorporates components and animations that provide more feedback to users. Additionally, a single underlying responsive system across all platforms allow for a more unified user experience.</p>
-          </div>
-        </div>
-
-        <div class="col s12 m4">
-          <div class="icon-block">
-            <h2 class="center light-blue-text"><i class="material-icons">settings</i></h2>
-            <h5 class="center">Easy to work with</h5>
-
-            <p class="light">We have provided detailed documentation as well as specific code examples to help new users get started. We are also always open to feedback and can answer any questions a user may have about Materialize.</p>
-          </div>
+  <div class="section no-pad-bot" id="nft-chooser" style="display: none;">
+    <div class="container">
+      <div id="nft-chooser-form">
+        <h2>Choose Your NFT</h2>
+        <div class="input-field col s12">
+          <select id="chain-chooser">
+            <option value="" disabled selected>Choose a chain</option>
+            <option value="eth">Ethereum Mainnet</option>
+            <option value="ropsten">Ropsten (Ethereum Testnet)</option>
+            <option value="rinkeby">Rinkeby (Ethereum Testnet)</option>
+            <option value="goerli">Goerli (Ethereum Testnet)</option>
+            <option value="kovan">Kovan (Ethereum Testnet)</option>
+            <option value="bsc">Binance Smart Chain Mainnet</option>
+            <option value="polygon">Polygon (Matic) Mainnet</option>
+            <option value="mumbai">Mumbai (Matic Testnet)</option>
+            <option value="avalanche">Avalanche Mainnet</option>
+            <option value="avalanche testnet">Avalanche Testnet</option>
+            <option value="fantom">Fantom Mainnet</option>
+          </select>
+          <label>Chain</label>
         </div>
       </div>
-
+      <div id="nft-chooser-cards">
+        <div class="row card-list">
+          
+        </div>
+      </div>
     </div>
-    <br><br>
   </div>
 
-  <footer class="page-footer orange">
+
+  <div class="section no-pad-bot " id="joiner" style="display: none;">
+    <div class="container">
+      <h2>Create or Join a Nine</h2>
+      <div class="input-field col 12">
+        <input id="nine-name" type="text" class="">
+        <label for="nine-name">Name</label>
+        <span class="helper-text" data-error="wrong" data-success="right">Choose a cool name</span>
+      </div>
+      <div class="input-field col s12"></div>
+        <a class="waves-effect waves-light btn create">Create Nine</a>
+      </div>
+
+      <div id="nines-list" class="container">
+        <ul class="collection">
+          
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+  <footer class="page-footer grey darken-2">
     <div class="container">
       <div class="row">
         <div class="col l6 s12">
-          <h5 class="white-text">Company Bio</h5>
-          <p class="grey-text text-lighten-4">We are a team of college students working on this project like it's our full time job. Any amount would help support and continue development on this project and is greatly appreciated.</p>
+          <h5 class="white-text">Nines</h5>
+          <p class="grey-text text-lighten-4">A cross-chain game where NFTs come together to form mini-DAOs that do battle</p>
 
 
         </div>
         <div class="col l3 s12">
-          <h5 class="white-text">Settings</h5>
+          <h5 class="white-text">Powered by</h5>
           <ul>
-            <li><a class="white-text" href="#!">Link 1</a></li>
-            <li><a class="white-text" href="#!">Link 2</a></li>
-            <li><a class="white-text" href="#!">Link 3</a></li>
-            <li><a class="white-text" href="#!">Link 4</a></li>
+            <li><a class="white-text" href="#!">Moralis</a></li>
+            <li><a class="white-text" href="#!">Polygon</a></li>
+            <li><a class="white-text" href="#!">IPFS</a></li>
           </ul>
         </div>
         <div class="col l3 s12">
-          <h5 class="white-text">Connect</h5>
+          <h5 class="white-text">More</h5>
           <ul>
-            <li><a class="white-text" href="#!">Link 1</a></li>
-            <li><a class="white-text" href="#!">Link 2</a></li>
-            <li><a class="white-text" href="#!">Link 3</a></li>
-            <li><a class="white-text" href="#!">Link 4</a></li>
+            <li><a class="white-text" href="https://github.com/markcarey/nines">Github</a></li>
+            <li><a class="white-text" href="https://twitter.com/mthacks">Twitter</a></li>
+            <li><a class="white-text" href="#!">Video</a></li>
           </ul>
         </div>
       </div>
     </div>
     <div class="footer-copyright">
       <div class="container">
-      Made by <a class="orange-text text-lighten-3" href="http://materializecss.com">Materialize</a>
+      Made during NFTHack 2022
       </div>
     </div>
   </footer>
